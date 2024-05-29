@@ -4,10 +4,35 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.List;
+
 public class Bot extends TelegramLongPollingBot {
+    public InlineKeyboardButton next = InlineKeyboardButton.builder()
+            .text("Next").callbackData("next")
+            .build();
+
+    public InlineKeyboardButton back = InlineKeyboardButton.builder()
+            .text("Back")
+            .url("https://core.telegram.org/bots/api")
+            .build();
+
+    public InlineKeyboardButton url = InlineKeyboardButton.builder()
+            .text("Tutorial").callbackData("url")
+            .build();
     private boolean screaming = false;
+    private InlineKeyboardMarkup keyboardM1 = InlineKeyboardMarkup.builder()
+            .keyboardRow(List.of(next))
+            .build();
+
+    //Buttons are wrapped in lists each keyboard is a set button rows
+    private InlineKeyboardMarkup keyboardM2 = InlineKeyboardMarkup.builder()
+            .keyboardRow(List.of(back))
+            .keyboardRow(List.of(url))
+            .build();
     @Override
     public String getBotUsername() {
         return "Tutorial tg bot";
@@ -27,6 +52,17 @@ public class Bot extends TelegramLongPollingBot {
         //sendText(id, msg.getText());
         System.out.println(user.getFirstName() + " wrote " + msg.getText() + " :)");
 
+        var txt = msg.getText();
+        if(msg.isCommand()) {
+            if (txt.equals("/scream"))
+                screaming = true;
+            else if (txt.equals("/whisper"))
+                screaming = false;
+            else if (txt.equals("/menu"))
+                sendMenu(userId, "<b>Menu 1</b>", keyboardM1);
+            return;
+        }
+
         if (msg.isCommand()) {
             if (msg.getText().equals("/scream")) {
                 screaming = true; //If the command was "scream", we switch gears
@@ -42,6 +78,21 @@ public class Bot extends TelegramLongPollingBot {
             copyMessage(userId, msg.getMessageId()); //Else proceed normally
         }
 
+    }
+
+    public void sendMenu(Long who, String txt, InlineKeyboardMarkup km) {
+        SendMessage sm = SendMessage.builder()
+                .chatId(who.toString())
+                .parseMode("HTML")
+                .text(txt)
+                .replyMarkup(km)
+                .build();
+
+        try {
+            execute(sm);
+        } catch (TelegramApiException tae) {
+            throw new RuntimeException(tae);
+        }
     }
 
     private void scream(Long id, Message msg) {
