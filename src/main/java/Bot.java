@@ -1,6 +1,9 @@
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.CopyMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -127,6 +130,37 @@ public class Bot extends TelegramLongPollingBot {
             execute(cm); //Actually sending the message
         } catch (TelegramApiException tae) {
             throw new RuntimeException(); //Any error will be printed here
+        }
+    }
+
+    public void buttonTap(Long id, String queryId, String data, int msgId) {
+        EditMessageText editMessageText = EditMessageText.builder()
+                .chatId(id.toString())
+                .messageId(msgId).text("").build();
+
+        EditMessageReplyMarkup editMessageReplyMarkup = EditMessageReplyMarkup.builder()
+                .chatId(id.toString())
+                .messageId(msgId)
+                .build();
+
+        if (data.equals("next")) {
+            editMessageText.setText("MENU 2");
+            editMessageReplyMarkup.setReplyMarkup(keyboardM2);
+        } else if (data.equals("back")) {
+            editMessageText.setText("MENU 1");
+            editMessageReplyMarkup.setReplyMarkup(keyboardM1);
+        }
+
+        AnswerCallbackQuery close = AnswerCallbackQuery.builder()
+                .callbackQueryId(queryId)
+                .build();
+
+        try {
+            execute(close);
+            execute(editMessageText);
+            execute(editMessageReplyMarkup);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
     }
 }
