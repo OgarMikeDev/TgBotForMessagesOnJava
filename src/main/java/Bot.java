@@ -20,11 +20,12 @@ public class Bot extends TelegramLongPollingBot {
 
     public InlineKeyboardButton back = InlineKeyboardButton.builder()
             .text("Back")
-            .url("https://core.telegram.org/bots/api")
+            .callbackData("back")
             .build();
 
     public InlineKeyboardButton url = InlineKeyboardButton.builder()
-            .text("Tutorial").callbackData("url")
+            .text("Tutorial")
+            .url("https://core.telegram.org/bots/api")
             .build();
     private boolean screaming = false;
     private InlineKeyboardMarkup keyboardM1 = InlineKeyboardMarkup.builder()
