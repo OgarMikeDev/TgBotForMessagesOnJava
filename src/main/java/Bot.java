@@ -37,6 +37,7 @@ public class Bot extends TelegramLongPollingBot {
             .keyboardRow(List.of(back))
             .keyboardRow(List.of(url))
             .build();
+
     @Override
     public String getBotUsername() {
         return "Tutorial tg bot";
@@ -53,17 +54,21 @@ public class Bot extends TelegramLongPollingBot {
         User user = msg.getFrom();
         Long userId = user.getId();
 
+        buttonTap(userId, msg.getText(), msg.getMessageId());
+
         //sendText(id, msg.getText());
-        System.out.println(user.getFirstName() + " wrote " + msg.getText() + " :)");
+        System.out.println(user.getFirstName() + " wrote \"" + msg.getText() + "\" :)");
 
         var txt = msg.getText();
-        if(msg.isCommand()) {
-            if (txt.equals("/scream"))
+        if (msg.isCommand()) {
+            if (txt.equals("/scream")) {
                 screaming = true;
-            else if (txt.equals("/whisper"))
+            } else if (txt.equals("/whisper")) {
                 screaming = false;
-            else if (txt.equals("/menu"))
+            } else if (txt.equals("/menu")) {
                 sendMenu(userId, "<b>Menu 1</b>", keyboardM1);
+                buttonTap(userId, "next", msg.getMessageId());
+            }
             return;
         }
 
@@ -134,7 +139,7 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
-    public void buttonTap(Long id, String queryId, String data, int msgId) {
+    public void buttonTap(Long id, String data, int msgId) {
         EditMessageText editMessageText = EditMessageText.builder()
                 .chatId(id.toString())
                 .messageId(msgId).text("").build();
@@ -145,6 +150,7 @@ public class Bot extends TelegramLongPollingBot {
                 .build();
 
         if (data.equals("next")) {
+            System.out.println("Word: " + data);
             editMessageText.setText("MENU 2");
             editMessageReplyMarkup.setReplyMarkup(keyboardM2);
         } else if (data.equals("back")) {
@@ -152,12 +158,12 @@ public class Bot extends TelegramLongPollingBot {
             editMessageReplyMarkup.setReplyMarkup(keyboardM1);
         }
 
-        AnswerCallbackQuery close = AnswerCallbackQuery.builder()
-                .callbackQueryId(queryId)
-                .build();
+//        AnswerCallbackQuery close = AnswerCallbackQuery.builder()
+//                .callbackQueryId(queryId)
+//                .build();
 
         try {
-            execute(close);
+//            execute(close);
             execute(editMessageText);
             execute(editMessageReplyMarkup);
         } catch (Exception ex) {
