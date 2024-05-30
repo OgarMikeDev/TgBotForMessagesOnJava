@@ -50,14 +50,17 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasCallbackQuery()){
+        if (update.hasCallbackQuery()) {
             String id = update.getCallbackQuery().getMessage().getChatId().toString();
             int msgId = update.getCallbackQuery().getMessage().getMessageId();
             String data = update.getCallbackQuery().getData();
             String queryId = update.getCallbackQuery().getId();
 
-
-            System.out.println("a");
+            System.out.println(
+                    "Id: " + id +
+                    "\nMessage id: " + msgId +
+                    "\nData: " + data +
+                            "\nQuery id:" + queryId);
             EditMessageText newTxt = EditMessageText.builder()
                     .chatId(id)
                     .messageId(msgId).text("").build();
