@@ -50,45 +50,7 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasCallbackQuery()) {
-            String id = update.getCallbackQuery().getMessage().getChatId().toString();
-            int msgId = update.getCallbackQuery().getMessage().getMessageId();
-            String data = update.getCallbackQuery().getData();
-            String queryId = update.getCallbackQuery().getId();
-
-            System.out.println(
-                    "Id: " + id +
-                    "\nMessage id: " + msgId +
-                    "\nData: " + data +
-                            "\nQuery id:" + queryId);
-            EditMessageText newTxt = EditMessageText.builder()
-                    .chatId(id)
-                    .messageId(msgId).text("").build();
-
-            EditMessageReplyMarkup newKb = EditMessageReplyMarkup.builder()
-                    .chatId(id.toString()).messageId(msgId).build();
-
-            if(data.equals("next")) {
-                newTxt.setText("Menu 2");
-                newKb.setReplyMarkup(keyboardM2);
-            } else if(data.equals("back")) {
-                newTxt.setText("Menu 1");
-                newKb.setReplyMarkup(keyboardM1);
-            }
-
-            AnswerCallbackQuery close = AnswerCallbackQuery.builder()
-                    .callbackQueryId(queryId).build();
-
-            try {
-                execute(close);
-                execute(newTxt);
-                execute(newKb);
-            } catch (TelegramApiException e) {
-                throw new RuntimeException(e);
-            }
-
-            return;
-        }
+        buttonTab(update);
 
         Message msg = update.getMessage();
         User user = msg.getFrom();
@@ -173,6 +135,48 @@ public class Bot extends TelegramLongPollingBot {
             execute(cm); //Actually sending the message
         } catch (TelegramApiException tae) {
             throw new RuntimeException(); //Any error will be printed here
+        }
+    }
+
+    public void buttonTab(Update update) {
+        if (update.hasCallbackQuery()) {
+            String id = update.getCallbackQuery().getMessage().getChatId().toString();
+            int msgId = update.getCallbackQuery().getMessage().getMessageId();
+            String data = update.getCallbackQuery().getData();
+            String queryId = update.getCallbackQuery().getId();
+
+            System.out.println(
+                    "Id: " + id +
+                            "\nMessage id: " + msgId +
+                            "\nData: " + data +
+                            "\nQuery id:" + queryId);
+            EditMessageText newTxt = EditMessageText.builder()
+                    .chatId(id)
+                    .messageId(msgId).text("").build();
+
+            EditMessageReplyMarkup newKb = EditMessageReplyMarkup.builder()
+                    .chatId(id.toString()).messageId(msgId).build();
+
+            if(data.equals("next")) {
+                newTxt.setText("Menu 2");
+                newKb.setReplyMarkup(keyboardM2);
+            } else if(data.equals("back")) {
+                newTxt.setText("Menu 1");
+                newKb.setReplyMarkup(keyboardM1);
+            }
+
+            AnswerCallbackQuery close = AnswerCallbackQuery.builder()
+                    .callbackQueryId(queryId).build();
+
+            try {
+                execute(close);
+                execute(newTxt);
+                execute(newKb);
+            } catch (TelegramApiException e) {
+                throw new RuntimeException(e);
+            }
+
+            return;
         }
     }
 }
