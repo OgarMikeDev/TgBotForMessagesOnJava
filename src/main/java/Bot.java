@@ -40,21 +40,56 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "Tutorial tg bot";
+        return "ogar_mike_tg_30052024_bot";
     }
 
     @Override
     public String getBotToken() {
-        return "7232492112:AAGHKsTuP_VTDBlLBfAulfZ6O8ybk_gMGw0";
+        return "7243120977:AAHBOr0z1JJi90m95pPZpohIEhh_218i55Y";
     }
 
     @Override
     public void onUpdateReceived(Update update) {
+        if (update.hasCallbackQuery()){
+            String id = update.getCallbackQuery().getMessage().getChatId().toString();
+            int msgId = update.getCallbackQuery().getMessage().getMessageId();
+            String data = update.getCallbackQuery().getData();
+            String queryId = update.getCallbackQuery().getId();
+
+
+            System.out.println("a");
+            EditMessageText newTxt = EditMessageText.builder()
+                    .chatId(id)
+                    .messageId(msgId).text("").build();
+
+            EditMessageReplyMarkup newKb = EditMessageReplyMarkup.builder()
+                    .chatId(id.toString()).messageId(msgId).build();
+
+            if(data.equals("next")) {
+                newTxt.setText("Menu 2");
+                newKb.setReplyMarkup(keyboardM2);
+            } else if(data.equals("back")) {
+                newTxt.setText("Menu 1");
+                newKb.setReplyMarkup(keyboardM1);
+            }
+
+            AnswerCallbackQuery close = AnswerCallbackQuery.builder()
+                    .callbackQueryId(queryId).build();
+
+            try {
+                execute(close);
+                execute(newTxt);
+                execute(newKb);
+            } catch (TelegramApiException e) {
+                throw new RuntimeException(e);
+            }
+
+            return;
+        }
+
         Message msg = update.getMessage();
         User user = msg.getFrom();
         Long userId = user.getId();
-
-        buttonTap(userId, msg.getText(), msg.getMessageId());
 
         //sendText(id, msg.getText());
         System.out.println(user.getFirstName() + " wrote \"" + msg.getText() + "\" :)");
@@ -67,7 +102,6 @@ public class Bot extends TelegramLongPollingBot {
                 screaming = false;
             } else if (txt.equals("/menu")) {
                 sendMenu(userId, "<b>Menu 1</b>", keyboardM1);
-                buttonTap(userId, "next", msg.getMessageId());
             }
             return;
         }
@@ -136,38 +170,6 @@ public class Bot extends TelegramLongPollingBot {
             execute(cm); //Actually sending the message
         } catch (TelegramApiException tae) {
             throw new RuntimeException(); //Any error will be printed here
-        }
-    }
-
-    public void buttonTap(Long id, String data, int msgId) {
-        EditMessageText editMessageText = EditMessageText.builder()
-                .chatId(id.toString())
-                .messageId(msgId).text("").build();
-
-        EditMessageReplyMarkup editMessageReplyMarkup = EditMessageReplyMarkup.builder()
-                .chatId(id.toString())
-                .messageId(msgId)
-                .build();
-
-        if (data.equals("next")) {
-            System.out.println("Word: " + data);
-            editMessageText.setText("MENU 2");
-            editMessageReplyMarkup.setReplyMarkup(keyboardM2);
-        } else if (data.equals("back")) {
-            editMessageText.setText("MENU 1");
-            editMessageReplyMarkup.setReplyMarkup(keyboardM1);
-        }
-
-//        AnswerCallbackQuery close = AnswerCallbackQuery.builder()
-//                .callbackQueryId(queryId)
-//                .build();
-
-        try {
-//            execute(close);
-            execute(editMessageText);
-            execute(editMessageReplyMarkup);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
         }
     }
 }
