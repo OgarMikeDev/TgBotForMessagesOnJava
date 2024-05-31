@@ -25,7 +25,7 @@ public class Bot extends TelegramLongPollingBot {
 
     public InlineKeyboardButton url = InlineKeyboardButton.builder()
             .text("Tutorial")
-            .url("https://core.telegram.org/bots/api")
+            .url("https://web.telegram.org/a/#7243120977")
             .build();
     private boolean screaming = false;
     private InlineKeyboardMarkup keyboardM1 = InlineKeyboardMarkup.builder()
@@ -59,7 +59,7 @@ public class Bot extends TelegramLongPollingBot {
         //sendText(id, msg.getText());
         System.out.println(user.getFirstName() + " wrote \"" + msg.getText() + "\" :)");
 
-        var txt = msg.getText();
+        String txt = msg.getText();
         if (msg.isCommand()) {
             if (txt.equals("/scream")) {
                 screaming = true;
@@ -71,14 +71,14 @@ public class Bot extends TelegramLongPollingBot {
             return;
         }
 
-        if (msg.isCommand()) {
-            if (msg.getText().equals("/scream")) {
-                screaming = true; //If the command was "scream", we switch gears
-            } else if (msg.getText().equals("/whisper")) {
-                screaming = false; //Otherwise we return to normal
-            }
-            return; //We don't want to echo commands, so we exit
-        }
+//        if (msg.isCommand()) {
+//            if (msg.getText().equals("/scream")) {
+//                screaming = true; //If the command was "scream", we switch gears
+//            } else if (msg.getText().equals("/whisper")) {
+//                screaming = false; //Otherwise we return to normal
+//            }
+//            return; //We don't want to echo commands, so we exit
+//        }
 
         if (screaming) {
             scream(userId, msg); //Call a custom method
