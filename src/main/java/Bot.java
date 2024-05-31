@@ -71,15 +71,6 @@ public class Bot extends TelegramLongPollingBot {
             return;
         }
 
-//        if (msg.isCommand()) {
-//            if (msg.getText().equals("/scream")) {
-//                screaming = true; //If the command was "scream", we switch gears
-//            } else if (msg.getText().equals("/whisper")) {
-//                screaming = false; //Otherwise we return to normal
-//            }
-//            return; //We don't want to echo commands, so we exit
-//        }
-
         if (screaming) {
             scream(userId, msg); //Call a custom method
         } else {
