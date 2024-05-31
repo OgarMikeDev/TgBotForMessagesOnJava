@@ -25,7 +25,7 @@ public class Bot extends TelegramLongPollingBot {
 
     public InlineKeyboardButton url = InlineKeyboardButton.builder()
             .text("Tutorial")
-            .url("https://web.telegram.org/a/#7243120977")
+            .url("https://web.telegram.org/a/#1957288286")
             .build();
     private boolean screaming = false;
     private InlineKeyboardMarkup keyboardM1 = InlineKeyboardMarkup.builder()
